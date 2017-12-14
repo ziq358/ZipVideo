@@ -5,7 +5,9 @@ import android.graphics.SurfaceTexture
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.view.SurfaceHolder.Callback
@@ -16,9 +18,14 @@ import kotlinx.android.synthetic.main.layout_floating_window.view.*
 import android.view.WindowManager
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
+import android.widget.Toast
+import android.content.Intent
+
+
 
 
 class MainActivity : AppCompatActivity() {
+    private val ALERT_WINDOW_PERMISSION_CODE = 100
 
     var mMediaPlayer: MediaPlayer? = null
     var mVideoView: TextureView? = null
@@ -52,7 +59,11 @@ class MainActivity : AppCompatActivity() {
             mMediaPlayer?.start()
         }
         val button: Button = findViewById(R.id.show_floating_window)
-        button.setOnClickListener(View.OnClickListener { showFloatingWindow() })
+        button.setOnClickListener(View.OnClickListener {
+            if(checkPermission()){
+                showFloatingWindow()
+            }
+        })
     }
 
     private val mSurfaceTextureListener: TextureView.SurfaceTextureListener = object : TextureView.SurfaceTextureListener {
@@ -73,11 +84,36 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun checkPermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!Settings.canDrawOverlays(this)){
+                Toast.makeText(this, "当前无权限使用悬浮窗，请授权！", Toast.LENGTH_SHORT).show()
+                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + packageName))
+                startActivityForResult(intent, ALERT_WINDOW_PERMISSION_CODE)
+                return false
+            }
+        }
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode === ALERT_WINDOW_PERMISSION_CODE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.canDrawOverlays(this)) {
+                    Toast.makeText(this@MainActivity, "权限授予失败，无法开启悬浮窗", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
 
     var wm: WindowManager? = null
     var wmParams: LayoutParams? = null
     var floatingWindow: View? = null
     private fun showFloatingWindow(): Unit {
+
         if(wm == null){
             wm = this.applicationContext.getSystemService(android.content.Context.WINDOW_SERVICE) as WindowManager
             wmParams = LayoutParams()
