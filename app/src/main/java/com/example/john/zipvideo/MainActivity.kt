@@ -51,13 +51,13 @@ class MainActivity : AppCompatActivity() {
         mVideoView?.surfaceTextureListener = mSurfaceTextureListener
 
 
-        mMediaPlayer?.setDataSource(this, Uri.parse("android.resource://" + this.getPackageName() + "/" + R.raw.gao_bai_qi_qiu))
-        mMediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
-        mMediaPlayer?.prepareAsync()
-        mMediaPlayer?.setOnPreparedListener {
-            mMediaPlayer?.isLooping = true
-            mMediaPlayer?.start()
-        }
+//        mMediaPlayer?.setDataSource(this, Uri.parse("android.resource://" + this.getPackageName() + "/" + R.raw.gao_bai_qi_qiu))
+//        mMediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
+//        mMediaPlayer?.prepareAsync()
+//        mMediaPlayer?.setOnPreparedListener {
+//            mMediaPlayer?.isLooping = true
+//            mMediaPlayer?.start()
+//        }
         val button: Button = findViewById(R.id.show_floating_window)
         button.setOnClickListener(View.OnClickListener {
             if(checkPermission()){
