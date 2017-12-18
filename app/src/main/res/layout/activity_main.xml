@@ -12,19 +12,54 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         >
+
+        <RadioGroup
+            android:id="@+id/radio_button_group"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            >
+            <RadioButton
+                android:id="@+id/radio_button_1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="true"
+                android:text="本地视频"
+                />
+            <RadioButton
+                android:id="@+id/radio_button_2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="网络视频1"
+                />
+            <RadioButton
+                android:id="@+id/radio_button_3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="网络视频2"
+                />
+        </RadioGroup>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="点击下方播放"
+            />
         <TextureView
             android:id="@+id/video_view"
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="200dp"
+            android:background="#000000"
+            />
 
         <Button
             android:id="@+id/show_floating_window"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="show floating window"
+            android:text="显示悬浮框"
             />
 
         <com.example.john.zipvideo.ZipVideoPlayerView
+            android:id="@+id/mZipVideoPlayerView"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="300dp">

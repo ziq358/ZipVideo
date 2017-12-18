@@ -20,8 +20,8 @@ import android.view.MotionEvent
 import android.view.View.OnTouchListener
 import android.widget.Toast
 import android.content.Intent
-
-
+import android.widget.RadioGroup
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,10 +30,33 @@ class MainActivity : AppCompatActivity() {
     var mMediaPlayer: MediaPlayer? = null
     var mVideoView: TextureView? = null
 
+
+    var uri: Uri? = null
+    var uri2: Uri = Uri.parse("http://jzvd.nathen.cn/342a5f7ef6124a4a8faf00e738b8bee4/cf6d9db0bd4d41f59d09ea0a81e918fd-5287d2089db37e62345123a1be272f8b.mp4")
+    var uri3: Uri = Uri.parse("http://baobab.wandoujia.com/api/v1/playUrl?vid=2614&editionType=normal")
+
+    var mUri: Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mMediaPlayer = MediaPlayer()
+
+        uri = Uri.parse("android.resource://" + this.getPackageName() + "/" + R.raw.gao_bai_qi_qiu)
+        mUri = uri
+
+        mZipVideoPlayerView.setUri(mUri)
+        radio_button_group.setOnCheckedChangeListener(object : RadioGroup.OnCheckedChangeListener {
+            override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
+                when(checkedId){
+                    R.id.radio_button_1 ->mUri = uri
+                    R.id.radio_button_2 ->mUri = uri2
+                    R.id.radio_button_3 ->mUri = uri3
+                }
+                mZipVideoPlayerView.setUri(mUri)
+            }
+
+        })
 
         mVideoView = findViewById(R.id.video_view)
         mVideoView?.viewTreeObserver?.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
@@ -50,14 +73,20 @@ class MainActivity : AppCompatActivity() {
         mVideoView?.layoutParams?.height = mVideoView?.layoutParams?.width!!
         mVideoView?.surfaceTextureListener = mSurfaceTextureListener
 
+        mVideoView?.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                mMediaPlayer?.reset()
+                mMediaPlayer?.setDataSource(this@MainActivity, mUri)
+                mMediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
+                mMediaPlayer?.prepareAsync()
+                mMediaPlayer?.setOnPreparedListener {
+                    mMediaPlayer?.isLooping = true
+                    mMediaPlayer?.start()
+                }
+            }
 
-//        mMediaPlayer?.setDataSource(this, Uri.parse("android.resource://" + this.getPackageName() + "/" + R.raw.gao_bai_qi_qiu))
-//        mMediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
-//        mMediaPlayer?.prepareAsync()
-//        mMediaPlayer?.setOnPreparedListener {
-//            mMediaPlayer?.isLooping = true
-//            mMediaPlayer?.start()
-//        }
+        })
+
         val button: Button = findViewById(R.id.show_floating_window)
         button.setOnClickListener(View.OnClickListener {
             if(checkPermission()){

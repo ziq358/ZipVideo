@@ -5,7 +5,7 @@
         <shape>
             <corners android:radius="10dip" />
 
-            <solid android:color="#50ffffff" />
+            <solid android:color="#40ffffff" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
@@ -13,7 +13,7 @@
             <shape>
                 <corners android:radius="10dip" />
 
-                <solid android:color="#ffffff" />
+                <solid android:color="#ffffffff" />
             </shape>
         </clip>
     </item>
@@ -22,7 +22,7 @@
             <shape>
                 <corners android:radius="10dip" />
 
-                <solid android:color="#80ffffff" />
+                <solid android:color="#a0ffffff" />
             </shape>
         </clip>
     </item>

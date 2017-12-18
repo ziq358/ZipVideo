@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_video_controller_center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -13,21 +14,5 @@
         android:src="@drawable/ic_center_play" />
 
     <!-- loading -->
-
-    <ProgressBar
-        android:id="@+id/video_controller_loading"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_centerInParent="true"
-        android:indeterminateBehavior="repeat"
-        android:indeterminateOnly="true"
-        android:visibility="invisible" />
-
-    <FrameLayout
-        android:id="@+id/video_controller_gesture"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-    </FrameLayout>
 
 </RelativeLayout>
