@@ -48,16 +48,14 @@ public class SystemPlayer implements ZipVideoControllerListener, MediaPlayer.OnB
 
         @Override
         public void setSourceUri(Uri uri) {
-            release();
-            mMediaPlayer = new MediaPlayer();
-            if(mSurface != null){
-                mMediaPlayer.setSurface(mSurface);
+            if(mCallback != null){
+                mCallback.onStatusUpdate(0, 0, 0, false);
             }
+            mHandler.removeMessages(UPDATE_SEEK_BAR);
+            mMediaPlayer.stop();
             sourceUri = uri;
             mIsPause = false;
         }
-
-
 
         @Override
         public void setSurface(Surface surface) {
