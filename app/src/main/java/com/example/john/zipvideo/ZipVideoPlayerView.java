@@ -51,15 +51,18 @@ public class ZipVideoPlayerView extends FrameLayout implements View.OnClickListe
 
     public ZipVideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initView();
     }
 
     public void setUri(Uri uri) {
         mIsPlayFirstTap = true;
-        mZipVideoControllerListener.setSourceUri(uri);
+        if(mZipVideoControllerListener != null){
+            mZipVideoControllerListener.setSourceUri(uri);
+        }
     }
 
-    private void initView() {
+    public void initView(ZipVideoControllerListener zipVideoControllerListener) {
+        mZipVideoControllerListener = zipVideoControllerListener;
+
         mRootView = inflate(this.getContext(), R.layout.video_player_view_layout, this);
         mRootView.findViewById(R.id.video_controller_back).setOnClickListener(this);
         mRootView.findViewById(R.id.video_controller_play).setOnClickListener(this);
@@ -103,7 +106,6 @@ public class ZipVideoPlayerView extends FrameLayout implements View.OnClickListe
 
             }
         });
-        mZipVideoControllerListener = new SystemPlayer(this.getContext());
         mZipVideoControllerListener.setCallback(new Callback() {
             @Override
             public void onStatusUpdate(int duration, int currentPosition, int bufferPercent, boolean isPlaying) {
@@ -170,8 +172,6 @@ public class ZipVideoPlayerView extends FrameLayout implements View.OnClickListe
         }
     };
 
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -222,145 +222,11 @@ public class ZipVideoPlayerView extends FrameLayout implements View.OnClickListe
         int getCurrentProgress();
         boolean isPlaying();
         void setCallback(Callback callback);
+
+        void release();
     }
 
     interface Callback{
         void onStatusUpdate(int duration, int currentPosition, int bufferPercent, boolean isPlaying);
     }
-
-    // 为了以后拓展用 其他 播放器，
-    static class SystemPlayer implements ZipVideoControllerListener, MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener{
-
-        private final static int UPDATE_SEEK_BAR = 1;
-
-        private MediaPlayer mMediaPlayer = new MediaPlayer();
-        private Context mContext;
-        private Uri sourceUri;
-        private boolean mIsPause;
-        private int mBufferPercent;
-        private Callback mCallback;
-
-        public SystemPlayer(Context context) {
-            mContext = context;
-        }
-
-        public void setCallback(Callback callback) {
-            this.mCallback = callback;
-        }
-
-        @Override
-        public void setSourceUri(Uri uri) {
-            sourceUri = uri;
-            mIsPause = false;
-            mMediaPlayer.reset();
-        }
-
-        @Override
-        public void setSurface(Surface surface) {
-            mMediaPlayer.setSurface(surface);
-        }
-
-        @Override
-        public void onPlay() {
-            if(!mMediaPlayer.isPlaying()){
-                if(mIsPause){
-                    mIsPause = false;
-                    mMediaPlayer.start();
-                    mHandler.sendEmptyMessage(UPDATE_SEEK_BAR);
-                }else{
-                    try {
-                        mMediaPlayer.reset();
-                        mMediaPlayer.setDataSource(mContext, sourceUri);
-                        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                        mMediaPlayer.setOnErrorListener(this);
-                        mMediaPlayer.prepareAsync();
-                        mMediaPlayer.setOnBufferingUpdateListener(this);
-                        mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            @Override
-                            public void onPrepared(MediaPlayer mp) {
-                                mMediaPlayer.start();
-                                mHandler.sendEmptyMessage(UPDATE_SEEK_BAR);
-                            }
-                        });
-                        mMediaPlayer.setOnCompletionListener(this);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        }
-
-        @Override
-        public void onPause() {
-            mIsPause = true;
-            mMediaPlayer.pause();
-            if(mCallback != null){
-                mCallback.onStatusUpdate(getDuration(), getCurrentProgress(), mBufferPercent, isPlaying());
-            }
-            mHandler.removeMessages(UPDATE_SEEK_BAR);
-        }
-
-        @Override
-        public void onSeekTo(int progress) {
-            mIsPause = false;
-            mMediaPlayer.seekTo(progress);
-            if(!isPlaying()){
-                mMediaPlayer.start();
-            }
-            mHandler.sendEmptyMessage(UPDATE_SEEK_BAR);
-        }
-
-        @Override
-        public int getDuration() {
-            return mMediaPlayer.getDuration();
-        }
-
-        @Override
-        public int getCurrentProgress() {
-            return mMediaPlayer.getCurrentPosition();
-        }
-
-        @Override
-        public boolean isPlaying() {
-            return mMediaPlayer.isPlaying() && !mIsPause;
-        }
-
-
-        private Handler mHandler = new Handler(Looper.getMainLooper()){
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case UPDATE_SEEK_BAR:
-                        if(mCallback != null){
-                            mCallback.onStatusUpdate(getDuration(), getCurrentProgress(), mBufferPercent,isPlaying());
-                        }
-                        mHandler.sendEmptyMessageDelayed(UPDATE_SEEK_BAR, 1000);
-                        break;
-                }
-            }
-        };
-
-        @Override
-        public void onBufferingUpdate(MediaPlayer mp, int percent) {
-            mBufferPercent = percent;
-            if(mCallback != null){
-                mCallback.onStatusUpdate(getDuration(), getCurrentProgress(), mBufferPercent, isPlaying());
-            }
-        }
-
-        @Override
-        public void onCompletion(MediaPlayer mp) {
-            if(mCallback != null){
-                mCallback.onStatusUpdate(getDuration(), getCurrentProgress(), mBufferPercent,isPlaying());
-            }
-            mHandler.removeMessages(UPDATE_SEEK_BAR);
-        }
-
-        @Override
-        public boolean onError(MediaPlayer mp, int what, int extra) {
-            return true;
-        }
-    }
-
 }
