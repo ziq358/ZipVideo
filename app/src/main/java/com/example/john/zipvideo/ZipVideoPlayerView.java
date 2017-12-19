@@ -206,7 +206,7 @@ public class ZipVideoPlayerView extends FrameLayout implements View.OnClickListe
     }
 
     private void onFullScreen(){
-
+        ZipVideoPlayerViewFullScreenUtil.startFullScreen(this.getContext(), mZipVideoControllerListener);
     }
 
     interface  ZipVideoControllerListener{
