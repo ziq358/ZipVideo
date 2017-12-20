@@ -59,9 +59,8 @@
 
         <com.example.john.zipvideo.ZipVideoPlayerView
             android:id="@+id/mZipVideoPlayerView"
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
-            android:layout_height="300dp">
+            android:layout_height="200dp">
         </com.example.john.zipvideo.ZipVideoPlayerView>
 
     </LinearLayout>
