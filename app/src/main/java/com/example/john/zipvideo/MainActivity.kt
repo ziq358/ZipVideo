@@ -149,7 +149,9 @@ class MainActivity : AppCompatActivity() {
         if(wm == null){
             wm = this.applicationContext.getSystemService(android.content.Context.WINDOW_SERVICE) as WindowManager
             wmParams = LayoutParams()
-            wmParams?.type = if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) WindowManager.LayoutParams.TYPE_TOAST else WindowManager.LayoutParams.TYPE_PHONE
+
+            //8.0 26 不支持
+            wmParams?.type = if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1 && Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) WindowManager.LayoutParams.TYPE_TOAST else WindowManager.LayoutParams.TYPE_PHONE
             wmParams?.format = PixelFormat.TRANSPARENT
             wmParams?.flags = (FLAG_NOT_TOUCH_MODAL
                     or FLAG_NOT_FOCUSABLE
