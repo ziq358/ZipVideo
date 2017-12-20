@@ -69,7 +69,6 @@ public class ZipVideoPlayerView extends FrameLayout implements View.OnClickListe
         mRootView.findViewById(R.id.video_controller_status_icon).setOnClickListener(this);
         mRootView.findViewById(R.id.video_controller_fullscreen).setOnClickListener(this);
 
-        mRootView.findViewById(R.id.video_controller_gesture).setOnClickListener(this);
         mTopController = mRootView.findViewById(R.id.rl_video_controller_top);
         mBottomController = mRootView.findViewById(R.id.rl_video_controller_bottom);
         mLoading = mRootView.findViewById(R.id.video_controller_loading);
@@ -177,9 +176,6 @@ public class ZipVideoPlayerView extends FrameLayout implements View.OnClickListe
         switch (v.getId()){
             case R.id.video_controller_back:
                 onBack();
-                break;
-            case R.id.video_controller_gesture:
-                showOrHideControllerPlane();
                 break;
             case R.id.video_controller_status_icon:
             case R.id.video_controller_play:

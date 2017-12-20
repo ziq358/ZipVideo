@@ -16,7 +16,7 @@ import android.widget.FrameLayout;
 public class ZipVideoPlayerViewFullScreenUtil {
 
 
-    private static Activity convertActivity(Context context){
+    public static Activity convertActivity(Context context){
         if(context == null){
             return null;
         }else if(context instanceof Activity){
